@@ -1,4 +1,8 @@
 import time
+import os
+
+path = os.getcwd()
+imagelist = os.listdir(path+'/images')
 
 class Sentences:
     def __init__(self):
@@ -12,7 +16,15 @@ class Flag:
         self.y = 0
         self.r = int(random(15,25))
         self.speed = random(3,10)
-        self.dialects = ['pirate','somethingelse']
+        
+       
+        self.images = {}
+        for i in imagelist:
+            self.images.update({i.replace(".png",""):loadImage(path+'/images/'+i)})
+        
+        
+        
+        
         
     def assignFlag(self):
         x = int(random(len(self.dialects)))
@@ -29,10 +41,6 @@ class Screen:
     
     def createFlags(self):
         self.flags.append(Flag(int(random(0,self.w))))
-        
-        
-        
-            
 
         
     
@@ -68,6 +76,4 @@ def draw():
     
 def mousePressed():
     noLoop()
-    
-print (self.flags)
     
