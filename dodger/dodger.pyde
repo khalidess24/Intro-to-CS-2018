@@ -69,5 +69,5 @@ def draw():
 def mousePressed():
     noLoop()
     
-
+print (self.flags)
     
