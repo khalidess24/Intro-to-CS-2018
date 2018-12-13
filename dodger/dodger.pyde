@@ -17,7 +17,7 @@ class Flag:
         self.r = int(random(15,25))
         self.speed = random(3,10)
         
-       
+    
         self.images = {}
         for i in imagelist:
             self.images.update({i.replace(".png",""):loadImage(path+'/images/'+i)})
@@ -27,9 +27,11 @@ class Flag:
         
         
     def assignFlag(self):
-        x = int(random(len(self.dialects)))
-        self.dialect = self.dialects[x]
-
+        dialectList = list(self.images.keys())
+        x = int(random(len(self.images)))
+        self.dialect = dialectList[x]
+        
+        
 class Screen:
     def __init__(self,mkFlagRate = 6, w=500,h=500):
         self.w = w
@@ -40,7 +42,9 @@ class Screen:
         
     
     def createFlags(self):
-        self.flags.append(Flag(int(random(0,self.w))))
+        flag = Flag(int(random(0,self.w)))
+        flag.assignFlag()
+        self.flags.append(flag)
 
         
     
@@ -49,7 +53,8 @@ class Screen:
             self.createFlags()
         
         for i in range(len(self.flags)):
-            ellipse(self.flags[i].x, self.flags[i].y, self.flags[i].r*2,self.flags[i].r*2)
+            image(self.flags[i].images[self.flags[i].dialect],self.flags[i].x,self.flags[i].y,self.flags[i].r*2,self.flags[i].r*2)
+            # ellipse(self.flags[i].x, self.flags[i].y, self.flags[i].r*2,self.flags[i].r*2)
             self.flags[i].y += self.flags[i].speed
             
         
@@ -63,8 +68,9 @@ class Screen:
 g = Screen()
 g.createFlags()
 
+# z = Flag(50)
 # z.assignFlag()
-
+# print(z.dialect)
 
 
 def setup():
