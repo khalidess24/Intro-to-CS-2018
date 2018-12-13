@@ -1,4 +1,4 @@
-
+import time
 
 class Sentences:
     def __init__(self):
@@ -6,12 +6,12 @@ class Sentences:
 
 
 class Flag:
-    def __init__(self, x, r = 30, speed = random(2,10)):
+    def __init__(self, x):
         self.dialect = None
         self.x = x
         self.y = 0
-        self.r = r
-        self.speed = speed
+        self.r = int(random(15,25))
+        self.speed = random(3,10)
         self.dialects = ['pirate','somethingelse']
         
     def assignFlag(self):
@@ -19,23 +19,36 @@ class Flag:
         self.dialect = self.dialects[x]
 
 class Screen:
-    def __init__(self,mkFlagRate = 4, w=500,h=500):
+    def __init__(self,mkFlagRate = 6, w=500,h=500):
         self.w = w
         self.h = h
         self.rate = mkFlagRate
+        self.maxFlags = 6
         self.flags = []
         
     
     def createFlags(self):
-        # for i in self.rate:
-        self.flags.append(Flag(50))
+        self.flags.append(Flag(int(random(0,self.w))))
+        
+        
+        
             
 
         
     
     def display(self):
-        ellipse(self.flags[0].x, self.flags[0].y, self.flags[0].r*2,self.flags[0].r*2)
-        self.flags[0].y += self.flags[0].speed
+        if len(self.flags) < self.maxFlags:
+            self.createFlags()
+        
+        for i in range(len(self.flags)):
+            ellipse(self.flags[i].x, self.flags[i].y, self.flags[i].r*2,self.flags[i].r*2)
+            self.flags[i].y += self.flags[i].speed
+            
+        
+        for i in range(len(self.flags)-i):
+            if self.flags[i].y > self.h:
+                del(self.flags[i])
+        
         
     
 
@@ -52,4 +65,9 @@ def setup():
 def draw():
     background(255)
     g.display()
+    
+def mousePressed():
+    noLoop()
+    
+
     
