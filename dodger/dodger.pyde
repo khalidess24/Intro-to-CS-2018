@@ -45,12 +45,14 @@ class Avatar:
             self.y= (self.ScreenHeight-self.r*2)
             
         
-        def CollisionDetection(self,flag):
-            distance = ((self.x - flag.x)**2 + (self.y - flag.y)**2)**0.5
-            if distance <= (self.r+flag.r)*2:
-                return True
-            else:
-                return False
+    def CollisionDetection(self,flag):
+        distance = ((self.x - flag.x)**2 + (self.y - flag.y)**2)**0.5
+        if distance <= (self.r+flag.r)*2:
+            return True
+            # print('ye')
+        else:
+            return False
+            # print('ne')
 
 
 
@@ -95,12 +97,13 @@ class Screen:
         self.flags = []
         self.a = None
         self.sentence = None
+        self.targetdialect = None
         
         
     def assignSentence(self):
         s = Sentence()
-        
         self.sentence = s.sentences[int(random(0,len(s.sentences)-1))]
+        self.targetdialect = s.sentences
         
     
     def createFlags(self):
@@ -138,6 +141,13 @@ class Screen:
         #display avatar
         self.a.display()
         self.a.update()
+        
+        #collision detection
+        for flag in self.flags:
+            if self.a.CollisionDetection(flag) is True:
+                if self.sentence.keys()[0] == flag.dialect:
+                    pass
+                    
         
         
 g = Screen()
