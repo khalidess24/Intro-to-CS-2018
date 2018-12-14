@@ -23,7 +23,7 @@ class Avatar:
         self.down=0
         self.left=0
         self.speed=8
-        self.r=20
+        self.r=35
         self.avatar=loadImage(path+'/Avatar.png')
         
         
@@ -47,7 +47,7 @@ class Avatar:
         
     def CollisionDetection(self,flag):
         distance = ((self.x - flag.x)**2 + (self.y - flag.y)**2)**0.5
-        if distance <= (self.r+flag.r)*2:
+        if  distance <= (self.r+flag.r-2): #(self.r+flag.r)<=
             return True
             # print('ye')
         else:
@@ -73,7 +73,7 @@ class Flag:
         self.dialect = None
         self.x = x
         self.y = 0
-        self.r = int(random(15,25))
+        self.r = int(random(30,40))
         self.speed = random(3,7)
         
     
@@ -89,7 +89,7 @@ class Flag:
         
         
 class Screen:
-    def __init__(self,mkFlagRate = 6, w=500,h=500):
+    def __init__(self,mkFlagRate = 10, w=1200,h=640):
         self.w = w
         self.h = h
         self.rate = mkFlagRate
@@ -97,13 +97,21 @@ class Screen:
         self.flags = []
         self.a = None
         self.sentence = None
+        self.decodedSentence = None
         self.targetdialect = None
+        self.gameplay = True
+        self.rightAnswers = 0
+        self.wrongAnswers = 0
+        self.score = self.rightAnswers
         
         
     def assignSentence(self):
         s = Sentence()
         self.sentence = s.sentences[int(random(0,len(s.sentences)-1))]
         self.targetdialect = s.sentences
+        
+        sentence = self.sentence.values()[0]
+        self.decodedSentence = sentence.decode('utf-8')
         
     
     def createFlags(self):
@@ -115,6 +123,7 @@ class Screen:
         self.a = Avatar(x,y)
 
         
+    
     
     def display(self):
         #displays flags
@@ -132,29 +141,45 @@ class Screen:
                 del(self.flags[i])
         
         #display sentence
-        fill(255,0,0)
+        fill(255)
         #s.sentences[5].values()[0]
-        sentence = self.sentence.values()[0]
-        decodedSentence = sentence.decode('utf-8')
-        text(unicode(decodedSentence),250,30)
+        
+        text(unicode(self.decodedSentence),self.w/2,45)
         
         #display avatar
         self.a.display()
         self.a.update()
         
         #collision detection
+        
+        
+        # text('Score:'+str(self.score),self.)
+        
+        
+        
         for flag in self.flags:
             if self.a.CollisionDetection(flag) is True:
                 if self.sentence.keys()[0] == flag.dialect:
-                    pass
+                    self.rightAnswers += 0
+                    
+                    self.gameplay = False
+                    self.assignSentence()
+                    
+                if self.sentence.keys()[0] != flag.dialect:
+                    self.wrongAnswers -= 0
+                    
+                    self.gameplay = False
+                    # self.assignSentence()
                     
         
         
+        
+
 g = Screen()
 g.createFlags()
 g.createAvatar(g.w,g.h)
 g.assignSentence()
-print(g.sentence)
+# print(g.sentence)
 
 # this instantiates the sentence class, 
 # which has a list of dictionaries all the sentences. it looks like this {'dialect':'sentence'}
@@ -170,46 +195,70 @@ s = Sentence()
                                                                                                     
 x = s.sentences[5].values()[0]
 x = x.decode("utf-8")
-print(x)
+# print(x)
 
 # print(s.sentences[5].values())
 # z = Flag(50)
 # z.assignFlag()
 # print(z.dialect)
 
+map = loadImage(path+'/idrisi_cropped.jpg')
 
+
+textsize = 40
 def setup():
     size(g.w,g.h)
-    f = createFont("BCompset.ttf",32)
+    
+    f = createFont("BCompset.ttf",textsize)
     textFont(f)
     # f = loadFont("DecoTypeNaskh-48.vlw")
     textMode(SHAPE)
     textAlign(CENTER)
     textFont(f)    
     
-def draw():
-    background(255)
-    g.display()
     
+if keyCode == 32:
+    g.gameplay = not g.gameplay
 
+def draw():
+
+    
+    if g.gameplay == True:
+        
+            
+        background(map)
+        g.display()
+        
+    elif g.gameplay == False:
+        fill(0,255,0)
+        textSize(textsize+18)
+        text(unicode(g.decodedSentence),g.w/2,45+50)
+        textSize(textsize)
+        
+        if keyCode == 32:
+            g.gameplay = not g.gameplay
+    
+    # print(g.gameplay)
+
+
+        
 
 def keyPressed():
-        if keyCode==UP:
-            g.a.up=1
-        if keyCode==DOWN:
-            g.a.down=1
-        if keyCode==RIGHT:
-            g.a.right=1
-        if keyCode==LEFT:
-            g.a.left=1
+    if keyCode==UP:
+        g.a.up=1
+    if keyCode==DOWN:
+        g.a.down=1
+    if keyCode==RIGHT:
+        g.a.right=1
+    if keyCode==LEFT:
+        g.a.left=1
             
 def keyReleased():
-        if keyCode==UP:
-            g.a.up=0
-        if keyCode==DOWN:
-            g.a.down=0
-        if keyCode==RIGHT:
-            g.a.right=0
-        if keyCode==LEFT:
-            g.a.left=0
-  
+    if keyCode==UP:
+        g.a.up=0
+    if keyCode==DOWN:
+        g.a.down=0
+    if keyCode==RIGHT:
+        g.a.right=0
+    if keyCode==LEFT:
+        g.a.left=0
