@@ -1,12 +1,23 @@
-import time
+
+# import time
 import os
 
 path = os.getcwd()
 imagelist = os.listdir(path+'/images')
+sentencelist = os.listdir(path+'/sentences')
+sentencelist.remove('.DS_Store')
+sentencelist.remove('test.py')
 
-class Sentences:
+
+class Sentence:
     def __init__(self):
-        self.sentence = {'pirate':'ahoi maties'}
+        # self.sentence = {'pirate':'ahoi maties'}
+        self.sentences = []
+        for i in sentencelist:
+            city = open(path+"/sentences/"+i,'r') #encoding='utf-8'
+            for line in city:
+                x = line.rstrip().split(",")
+                self.sentences.append({x[0]:x[1]})
 
 
 class Flag:
@@ -62,12 +73,30 @@ class Screen:
             if self.flags[i].y > self.h:
                 del(self.flags[i])
         
-        
+        fill(255,0,0)
+        #s.sentences[5].values()[0]
+        text(unicode(x),0,32)
     
 
 g = Screen()
 g.createFlags()
 
+# this instantiates the sentence class, 
+# which has a list of dictionaries all the sentences. it looks like this {'dialect':'sentence'}
+s = Sentence()
+
+#this is how you call a specific sentence, where s is the instantiated sentence class, 
+#sentences[5] calls the 5 element in the list of sentences
+# this 5th element is a dictionary, so calling its values() will give you a list of all its values 
+#(in this case there is only one value so you call the 1st element of that list at index 0 to get the sentence
+# the next line decodes it into utf-8(which is what arabic script is encoded in)
+# pretend it is displaying properly and keep going, this should be an easy fix later
+                                                                                                    
+x = s.sentences[5].values()[0]
+x = x.decode("utf-8")
+print(x)
+
+# print(s.sentences[5].values())
 # z = Flag(50)
 # z.assignFlag()
 # print(z.dialect)
@@ -75,10 +104,15 @@ g.createFlags()
 
 def setup():
     size(g.w,g.h)
+    # f = createFont("BCompset.ttf",32)
+    # textFont(f)
+    f = loadFont("AlBayan-48.vlw")
+    textFont(f)    
     
 def draw():
     background(255)
     g.display()
+    
     
 def mousePressed():
     noLoop()
