@@ -1,4 +1,6 @@
-
+# from __future__ import unicode_literals
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
 # import time
 import os
 
@@ -16,7 +18,7 @@ class Sentence:
         for i in sentencelist:
             city = open(path+"/sentences/"+i,'r') #encoding='utf-8'
             for line in city:
-                x = line.rstrip().split(",")
+                x = (line.rstrip().split(","))
                 self.sentences.append({x[0]:x[1]})
 
 
@@ -75,7 +77,7 @@ class Screen:
         
         fill(255,0,0)
         #s.sentences[5].values()[0]
-        text(unicode(x),0,32)
+        text(unicode(x),250,30)
     
 
 g = Screen()
@@ -104,16 +106,19 @@ print(x)
 
 def setup():
     size(g.w,g.h)
-    # f = createFont("BCompset.ttf",32)
-    # textFont(f)
-    f = loadFont("AlBayan-48.vlw")
+    f = createFont("BCompset.ttf",32)
+    textFont(f)
+    # f = loadFont("DecoTypeNaskh-48.vlw")
+    textMode(SHAPE)
+    textAlign(CENTER)
     textFont(f)    
     
 def draw():
     background(255)
     g.display()
+
     
     
 def mousePressed():
     noLoop()
-    
+  
