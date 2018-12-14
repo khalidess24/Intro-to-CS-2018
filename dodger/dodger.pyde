@@ -1,7 +1,3 @@
-# from __future__ import unicode_literals
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
-# import time
 import os
 
 path = os.getcwd()
@@ -9,6 +5,53 @@ imagelist = os.listdir(path+'/images')
 sentencelist = os.listdir(path+'/sentences')
 sentencelist.remove('.DS_Store')
 sentencelist.remove('test.py')
+
+
+img=""
+ScreenHeight = 500
+ScreenWidth = 500
+
+
+class Avatar:
+    def __init__(self,x,y):
+        self.ScreenHeight = y
+        self.ScreenWidth = x
+        self.x= x/2
+        self.y= y
+        self.right=0
+        self.up=0
+        self.down=0
+        self.left=0
+        self.speed=8
+        self.r=20
+        self.avatar=loadImage(path+'/Avatar.png')
+        
+        
+        
+    def display(self):
+        image(self.avatar,self.x,self.y,self.r*2,self.r*2)
+    
+        
+    def update(self):
+        self.x+= self.speed*(self.right-self.left)
+        self.y+= self.speed*(self.down-self.up)
+        if not (self.x>=0):
+            self.x=0
+        if not (self.x<= (self.ScreenWidth -self.r*2)):
+            self.x= (self.ScreenWidth-self.r*2)
+        if not (self.y>=0):
+            self.y=0
+        if not (self.y<= (self.ScreenHeight -self.r*2)):
+            self.y= (self.ScreenHeight-self.r*2)
+            
+        
+        def CollisionDetection(self,flag):
+            distance = ((self.x - flag.x)**2 + (self.y - flag.y)**2)**0.5
+            if distance <= (self.r+flag.r)*2:
+                return True
+            else:
+                return False
+
 
 
 class Sentence:
@@ -20,7 +63,8 @@ class Sentence:
             for line in city:
                 x = (line.rstrip().split(","))
                 self.sentences.append({x[0]:x[1]})
-
+                
+    
 
 class Flag:
     def __init__(self, x):
@@ -28,17 +72,14 @@ class Flag:
         self.x = x
         self.y = 0
         self.r = int(random(15,25))
-        self.speed = random(3,10)
+        self.speed = random(3,7)
         
     
         self.images = {}
         for i in imagelist:
             self.images.update({i.replace(".png",""):loadImage(path+'/images/'+i)})
         
-        
-        
-        
-        
+
     def assignFlag(self):
         dialectList = list(self.images.keys())
         x = int(random(len(self.images)))
@@ -52,16 +93,28 @@ class Screen:
         self.rate = mkFlagRate
         self.maxFlags = 6
         self.flags = []
+        self.a = None
+        self.sentence = None
+        
+        
+    def assignSentence(self):
+        s = Sentence()
+        
+        self.sentence = s.sentences[int(random(0,len(s.sentences)-1))]
         
     
     def createFlags(self):
         flag = Flag(int(random(0,self.w)))
         flag.assignFlag()
         self.flags.append(flag)
+        
+    def createAvatar(self,x,y):
+        self.a = Avatar(x,y)
 
         
     
     def display(self):
+        #displays flags
         if len(self.flags) < self.maxFlags:
             self.createFlags()
         
@@ -75,17 +128,28 @@ class Screen:
             if self.flags[i].y > self.h:
                 del(self.flags[i])
         
+        #display sentence
         fill(255,0,0)
         #s.sentences[5].values()[0]
-        text(unicode(x),250,30)
-    
-
+        sentence = self.sentence.values()[0]
+        decodedSentence = sentence.decode('utf-8')
+        text(unicode(decodedSentence),250,30)
+        
+        #display avatar
+        self.a.display()
+        self.a.update()
+        
+        
 g = Screen()
 g.createFlags()
+g.createAvatar(g.w,g.h)
+g.assignSentence()
+print(g.sentence)
 
 # this instantiates the sentence class, 
 # which has a list of dictionaries all the sentences. it looks like this {'dialect':'sentence'}
 s = Sentence()
+
 
 #this is how you call a specific sentence, where s is the instantiated sentence class, 
 #sentences[5] calls the 5 element in the list of sentences
@@ -116,9 +180,26 @@ def setup():
 def draw():
     background(255)
     g.display()
+    
 
-    
-    
-def mousePressed():
-    noLoop()
+
+def keyPressed():
+        if keyCode==UP:
+            g.a.up=1
+        if keyCode==DOWN:
+            g.a.down=1
+        if keyCode==RIGHT:
+            g.a.right=1
+        if keyCode==LEFT:
+            g.a.left=1
+            
+def keyReleased():
+        if keyCode==UP:
+            g.a.up=0
+        if keyCode==DOWN:
+            g.a.down=0
+        if keyCode==RIGHT:
+            g.a.right=0
+        if keyCode==LEFT:
+            g.a.left=0
   
